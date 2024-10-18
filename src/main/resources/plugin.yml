@@ -1,0 +1,15 @@
+name: simple-reward
+version: '0.0.1-SNAPSHOT'
+main: org.nott.SimpleReward
+api-version: '1.20'
+prefix: SimpleReward
+load: STARTUP
+authors: [ Nott ]
+description: Plugins for daily reward.
+depend: ["PlaceholderAPI"]
+
+commands:
+  dailyreward:
+    description: 'SW日常'
+    usage: '/dr help 查看帮助'
+    aliases: 'dr'

@@ -1,0 +1,25 @@
+reward:
+  # 获取打开奖励页面的间隔-单位秒
+  interval: 3600
+  # 每次可选择的物品
+  choose: 3
+  # 每个选择的物品数量
+  stack: 64
+  # 物品数量
+  item:
+    - STONE
+    - DIRT
+    - SAND
+    - OAK_LOG
+    - SPRUCE_LOG
+    - BIRCH_LOG
+    - JUNGLE_LOG
+    - ACACIA_LOG
+    - CHERRY_LOG
+    - DARK_OAK_LOG
+    - MANGROVE_LOG
+    - OAK_WOOD
+    - SPRUCE_WOOD
+    - BIRCH_WOOD
+    - JUNGLE_WOOD
+    - ACACIA_WOOD

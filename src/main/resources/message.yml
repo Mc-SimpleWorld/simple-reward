@@ -1,0 +1,17 @@
+log_reward_tip: '<yellow>欢迎%player_name%,距离下次获取日常奖励，还有%s小时'
+
+not_per: '你没有权限执行该命令'
+reloaded: '插件重载成功'
+not_have_reward: '没有设置任何奖励物品'
+title: '日常奖励'
+build_title: '日常建材奖励'
+have_last: '你有%s个日常奖励物品可选择'
+new_reward_tip: '你有新的日常奖励,使用/sr 命令查看'
+cancel: '关闭页面'
+confirm: '确认选择'
+choose: '点击选择'
+not_reward: '当前没有可用的奖励'
+tip: '左键选择需要的物品，再次点击取消选中'
+player_info: '你好,%play_name%'
+enter_build_reward: '点击进入日常建材奖励'
+
