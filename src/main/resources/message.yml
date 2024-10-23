@@ -14,4 +14,6 @@ not_reward: '当前没有可用的奖励'
 tip: '左键选择需要的物品，再次点击取消选中'
 player_info: '你好,%play_name%'
 enter_build_reward: '点击进入日常建材奖励'
+create_tab_error: '创建数据库表失败'
+welcome: '欢迎新玩家 %s,你的好友邀请码为%s ,好友输入/invite %s,双方皆可获取300SW币,七天内有效！'
 

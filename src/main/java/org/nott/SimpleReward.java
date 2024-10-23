@@ -8,6 +8,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.nott.global.GlobalFactory;
 import org.nott.gui.RewardGui;
+import org.nott.manager.SqlLiteManager;
 import org.nott.utils.SwUtil;
 
 import java.io.File;
@@ -33,7 +34,13 @@ public final class SimpleReward extends JavaPlugin {
         // Plugin startup logic
         this.saveDefaultConfig();
         this.initConfigYml();
+        this.initDb();
         SCHEDULER = this.getServer().getScheduler();
+    }
+
+    private void initDb() {
+        SqlLiteManager.checkDbFileIsExist(this);
+        SqlLiteManager.createTableIfNotExist(GlobalFactory.INVITE_TABLE,GlobalFactory.CREATE_INVITE_TABLE);
     }
 
     @Override

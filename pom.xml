@@ -47,6 +47,12 @@
                 <directory>src/main/resources</directory>
                 <filtering>true</filtering>
             </resource>
+            <resource>
+                <directory>${project.basedir}/libs</directory>
+                <!-- 输出在classes的目录 -->
+                <targetPath>libs</targetPath>
+                <filtering>false</filtering>
+            </resource>
         </resources>
     </build>
 
@@ -72,6 +78,11 @@
         <repository>
             <id>minebench-repo</id>
             <url>https://repo.minebench.de/</url>
+        </repository>
+
+        <repository>
+            <id>codemc-repo</id>
+            <url>https://repo.codemc.org/repository/maven-public/</url>
         </repository>
     </repositories>
 
@@ -127,5 +138,18 @@
             <version>33.3.0-jre</version>
         </dependency>
 
+        <dependency>
+            <groupId>fr.xephi</groupId>
+            <artifactId>authme</artifactId>
+            <version>5.6.1-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/commons-dbutils/commons-dbutils -->
+        <dependency>
+            <groupId>commons-dbutils</groupId>
+            <artifactId>commons-dbutils</artifactId>
+            <version>1.8.1</version>
+        </dependency>
     </dependencies>
 </project>
