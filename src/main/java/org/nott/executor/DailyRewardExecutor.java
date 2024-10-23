@@ -10,8 +10,8 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.nott.SimpleReward;
+import org.nott.utils.SwUtil;
 
 /**
  * @author Nott
@@ -26,14 +26,19 @@ public class DailyRewardExecutor implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String label, String[] args) {
         if (args.length == 1 && "reload".equals(args[0])) {
-            Audience audience = SimpleReward.adventure.player((Player) commandSender);
             if (commandSender.isOp()) {
-                getPlugin().initConfigYml();
-                TextComponent component = Component.text(SimpleReward.MESSAGE.getString("reloaded"))
-                        .color(NamedTextColor.YELLOW);
-                audience.sendMessage(component);
+                if("console".equals(commandSender.getName())){
+                    SwUtil.log(SimpleReward.MESSAGE.getString("reloaded"));
+                }else {
+                    Audience audience = SimpleReward.adventure.player((Player) commandSender);
+                    getPlugin().initConfigYml();
+                    TextComponent component = Component.text(SimpleReward.MESSAGE.getString("reloaded"))
+                            .color(NamedTextColor.YELLOW);
+                    audience.sendMessage(component);
+                }
                 return true;
             } else {
+                Audience audience = SimpleReward.adventure.player((Player) commandSender);
                 TextComponent component = Component.text(SimpleReward.MESSAGE.getString("not_per"))
                         .color(NamedTextColor.DARK_RED);
                 audience.sendMessage(component);

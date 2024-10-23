@@ -4,7 +4,6 @@ import lombok.Getter;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.nott.global.GlobalFactory;
@@ -13,21 +12,17 @@ import org.nott.utils.SwUtil;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @Getter
 public final class SimpleReward extends JavaPlugin {
 
     public static YamlConfiguration CONFIG;
     public static YamlConfiguration MESSAGE;
+    public static YamlConfiguration SAVE;
     public static BukkitScheduler SCHEDULER;
     public static BukkitAudiences adventure;
     private static RewardGui guiProvider;
-
-    public static Map<Player, AtomicInteger> playerRewardCountMap = new ConcurrentHashMap<>();
 
     public static RewardGui getGuiProvider() {
         return guiProvider;
@@ -52,25 +47,31 @@ public final class SimpleReward extends JavaPlugin {
     }
 
     public void initConfigYml() {
-        saveConfig();
-        CONFIG = (YamlConfiguration) this.getConfig();
-        YamlConfiguration message = new YamlConfiguration();
-        String path = this.getDataFolder() + File.separator + GlobalFactory.MESSAGE_YML;
+        String msgPath = this.getDataFolder() + File.separator + GlobalFactory.MESSAGE_YML;
+        String configPath = this.getDataFolder() + File.separator + GlobalFactory.CONFIG_YML;
+        String savePath = this.getDataFolder() + File.separator + GlobalFactory.SAVE_YML;
+        MESSAGE = loadFile(msgPath,GlobalFactory.MESSAGE_YML);
+        CONFIG = loadFile(configPath,GlobalFactory.CONFIG_YML);
+        SAVE = loadFile(savePath,GlobalFactory.SAVE_YML);
+    }
+
+    private YamlConfiguration loadFile(String path,String def){
+        YamlConfiguration fileYaml = new YamlConfiguration();
         File file = new File(path);
         if (!file.exists()) {
-            this.saveResource(GlobalFactory.MESSAGE_YML, false);
+            this.saveResource(def, false);
             try {
-                message.load(Objects.requireNonNull(this.getTextResource(GlobalFactory.MESSAGE_YML)));
+                fileYaml.load(Objects.requireNonNull(this.getTextResource(GlobalFactory.MESSAGE_YML)));
             } catch (IOException | InvalidConfigurationException e) {
                 throw new RuntimeException(e);
             }
         } else {
             try {
-                message.load(file);
+                fileYaml.load(file);
             } catch (IOException | InvalidConfigurationException e) {
                 throw new RuntimeException(e);
             }
         }
-        MESSAGE = message;
+        return fileYaml;
     }
 }

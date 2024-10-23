@@ -3,6 +3,7 @@ package org.nott.listener;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.ChatColor;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -13,10 +14,7 @@ import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 import org.nott.SimpleReward;
 import org.nott.utils.SwUtil;
-
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author Nott
@@ -38,24 +36,19 @@ public class DailyRewardListener implements Listener {
     @NotNull
     private static BukkitTask addRewardCount(Player player) {
         BukkitTask task = SwUtil.runTaskLater(() -> {
-            AtomicInteger atomicInteger = SimpleReward.playerRewardCountMap.get(player);
-            int chooseTime = SimpleReward.CONFIG.getInt("reward.choose");
-            if (atomicInteger == null) {
-                AtomicInteger integer = new AtomicInteger(chooseTime);
-                SimpleReward.playerRewardCountMap.put(player, integer);
-                integer.get();
-            } else {
-                atomicInteger.addAndGet(chooseTime);
-            }
+            int count = SimpleReward.SAVE.getInt(player.getName(), 0);
+            int chooseTime = SimpleReward.CONFIG.getInt("reward.choose", 3);
+            ConfigurationSection section = SimpleReward.SAVE.createSection(player.getName());
+            section.set("", count + chooseTime);
             SwUtil.sendMessage(player, SimpleReward.MESSAGE.getString("new_reward_tip"), ChatColor.AQUA);
             addRewardCount(player);
         }, SimpleReward.CONFIG.getInt("reward.interval", 3600) * 20L);
-        playerBukkitTaskMap.put(player,task);
+        playerBukkitTaskMap.put(player, task);
         return task;
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
-    public void onPlayerLogout(PlayerQuitEvent event){
+    public void onPlayerLogout(PlayerQuitEvent event) {
         Player player = event.getPlayer();
         if (SwUtil.isNotNull(playerBukkitTaskMap.get(player))) {
             BukkitTask task = playerBukkitTaskMap.get(player);

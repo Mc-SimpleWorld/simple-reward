@@ -44,7 +44,7 @@ public class RewardGui {
                 "anaaaraaa",
                 "aaaaaaaaa"
         };
-        Integer count = SimpleReward.playerRewardCountMap.get(player).get();
+        Integer count = SimpleReward.SAVE.getInt(player.getName(),0);
         String title = SimpleReward.MESSAGE.getString("title");
         InventoryGui gui = new InventoryGui(plugin, title, guiSetup);
         gui.addElement(new StaticGuiElement('a', new ItemStack(Material.AIR), ChatColor.LIGHT_PURPLE.toString()));
@@ -74,8 +74,8 @@ public class RewardGui {
     }
 
     public InventoryGui getRewardMenu(Player player){
-        AtomicInteger atomicInteger = SimpleReward.playerRewardCountMap.get(player);
-        if(SwUtil.isNull(atomicInteger) || atomicInteger.get() <= 0){
+        Integer count = SimpleReward.SAVE.getInt(player.getName(),0);
+        if(SwUtil.isNull(count) || count <= 0){
             SwUtil.sendMessage(player,SimpleReward.MESSAGE.getString("not_reward"),ChatColor.RED);
             closeAll(player);
         }
@@ -134,7 +134,7 @@ public class RewardGui {
                             click.getGui().draw(); // Update the GUI
                             return true;
                         },
-                        String.format(SimpleReward.MESSAGE.getString("have_last"), SimpleReward.playerRewardCountMap.get(player).get()) + ChatColor.DARK_GREEN);
+                        String.format(SimpleReward.MESSAGE.getString("have_last"), (count + "")) + ChatColor.DARK_GREEN);
             }));
         }
         // Close GUI
