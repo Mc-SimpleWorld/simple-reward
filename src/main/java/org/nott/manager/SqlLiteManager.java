@@ -34,6 +34,7 @@ public class SqlLiteManager {
         plugin.saveResource("libs/database.db",false);
     }
 
+    @SuppressWarnings("all")
     public static void createTableIfNotExist(String tableName, String sql) {
         Connection connect = null;
         PreparedStatement statement = null;

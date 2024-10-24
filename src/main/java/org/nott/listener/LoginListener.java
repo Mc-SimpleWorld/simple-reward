@@ -110,7 +110,7 @@ public class LoginListener implements Listener {
         }else {
             valInteger = Integer.parseInt(val);
         }
-        SimpleReward.ECONOMY.depositPlayer(player, Double.parseDouble(val));
+        SimpleReward.ECONOMY.depositPlayer(player, valInteger);
     }
 
     @SuppressWarnings("all")

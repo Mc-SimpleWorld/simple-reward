@@ -24,6 +24,7 @@ public class DailyRewardExecutor implements CommandExecutor {
     private SimpleReward plugin;
 
     @Override
+    @SuppressWarnings("all")
     public boolean onCommand(CommandSender commandSender, Command command, String label, String[] args) {
         if (args.length == 1 && "reload".equals(args[0])) {
             if (commandSender.isOp()) {

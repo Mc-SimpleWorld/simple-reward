@@ -32,6 +32,7 @@ import java.util.stream.Collectors;
  */
 @Data
 @AllArgsConstructor
+@SuppressWarnings("all")
 public class RewardGui {
 
     private SimpleReward plugin;
