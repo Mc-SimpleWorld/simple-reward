@@ -2,12 +2,17 @@ package org.nott;
 
 import lombok.Getter;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
+import net.milkbowl.vault.economy.Economy;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.plugin.PluginManager;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
+import org.nott.executor.InviteExecutor;
 import org.nott.global.GlobalFactory;
 import org.nott.gui.RewardGui;
+import org.nott.listener.LoginListener;
 import org.nott.manager.SqlLiteManager;
 import org.nott.utils.SwUtil;
 
@@ -24,6 +29,7 @@ public final class SimpleReward extends JavaPlugin {
     public static BukkitScheduler SCHEDULER;
     public static BukkitAudiences adventure;
     private static RewardGui guiProvider;
+    public static Economy ECONOMY;
 
     public static RewardGui getGuiProvider() {
         return guiProvider;
@@ -35,12 +41,27 @@ public final class SimpleReward extends JavaPlugin {
         this.saveDefaultConfig();
         this.initConfigYml();
         this.initDb();
+        this.setupEconomy();
+        this.registerComponent();
         SCHEDULER = this.getServer().getScheduler();
+    }
+
+    @SuppressWarnings(value = "all")
+    private void registerComponent() {
+        PluginManager pluginManager = this.getServer().getPluginManager();
+        pluginManager.registerEvents(new LoginListener(this),this);
+        this.getCommand("invite").setExecutor(new InviteExecutor(this));
+    }
+
+    private void setupEconomy() {
+        RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
+        ECONOMY = rsp.getProvider();
     }
 
     private void initDb() {
         SqlLiteManager.checkDbFileIsExist(this);
         SqlLiteManager.createTableIfNotExist(GlobalFactory.INVITE_TABLE,GlobalFactory.CREATE_INVITE_TABLE);
+        SqlLiteManager.createTableIfNotExist(GlobalFactory.LOG_TABLE,GlobalFactory.CREATE_LOG_TABLE);
     }
 
     @Override

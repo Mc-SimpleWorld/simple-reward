@@ -13,3 +13,7 @@ commands:
     description: 'SW日常'
     usage: '/dr help 查看帮助'
     aliases: 'dr'
+  invite:
+    description: '邀请有礼系统'
+    usage: '邀请新玩家：/i {邀请码}'
+    aliases: 'i'
