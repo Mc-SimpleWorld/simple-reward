@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.util.Objects;
 
 @Getter
+@SuppressWarnings("all")
 public final class SimpleReward extends JavaPlugin {
 
     public static YamlConfiguration CONFIG;
@@ -41,9 +42,12 @@ public final class SimpleReward extends JavaPlugin {
         this.saveDefaultConfig();
         this.initConfigYml();
         this.initDb();
-        this.setupEconomy();
         this.registerComponent();
+        RegisteredServiceProvider<Economy> rsp = this.getServer().getServicesManager().getRegistration(Economy.class);
+        ECONOMY = rsp.getProvider();
         SCHEDULER = this.getServer().getScheduler();
+        adventure = BukkitAudiences.create(this);
+//        this.setupEconomy();
     }
 
     @SuppressWarnings(value = "all")
@@ -53,10 +57,9 @@ public final class SimpleReward extends JavaPlugin {
         this.getCommand("invite").setExecutor(new InviteExecutor(this));
     }
 
-    private void setupEconomy() {
-        RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
-        ECONOMY = rsp.getProvider();
-    }
+//    private void setupEconomy() {
+//
+//    }
 
     private void initDb() {
         SqlLiteManager.checkDbFileIsExist(this);

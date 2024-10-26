@@ -3,10 +3,10 @@ version: '0.0.1-SNAPSHOT'
 main: org.nott.SimpleReward
 api-version: '1.20'
 prefix: SimpleReward
-load: STARTUP
 authors: [ Nott ]
 description: Plugins for daily reward.
 depend: ["PlaceholderAPI"]
+loadbefore: ['Vault']
 
 commands:
   dailyreward:
