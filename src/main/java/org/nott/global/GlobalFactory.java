@@ -23,6 +23,8 @@ public class GlobalFactory {
     public interface Formatter{
         SimpleDateFormat YYYYMMDD = new SimpleDateFormat("yyyy-MM-dd");
         SimpleDateFormat YYYYMMDDHHMMSS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        SimpleDateFormat HHMM = new SimpleDateFormat("HH:mm");
     }
 
 }

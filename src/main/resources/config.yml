@@ -1,5 +1,6 @@
 reward:
   invite: 300
+  remove_expired_invite_time: '12:00'
   # 获取打开奖励页面的间隔-单位秒
   interval: 3600
   # 每次可选择的物品
