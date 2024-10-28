@@ -3,10 +3,10 @@ package org.nott;
 import lombok.Getter;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.milkbowl.vault.economy.Economy;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.plugin.PluginManager;
-import org.bukkit.plugin.RegisteredServiceProvider;
+import org.bukkit.plugin.*;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.nott.executor.InviteExecutor;
@@ -30,9 +30,32 @@ public final class SimpleReward extends JavaPlugin {
     public static BukkitAudiences adventure;
     private static RewardGui guiProvider;
     public static Economy ECONOMY;
+    private static SimpleReward plugin;
 
     public static RewardGui getGuiProvider() {
         return guiProvider;
+    }
+
+    public SimpleReward() {
+        plugin = this;
+    }
+
+
+    @Override
+    public void onLoad() {
+        if (!registerEconomy()) {
+            getLogger().severe("没有找到Vault,请先下载Vault插件!");
+            Bukkit.getPluginManager().disablePlugin(this);
+        }
+    }
+
+    private boolean registerEconomy() {
+        Class<net.milkbowl.vault.economy.Economy> vault = net.milkbowl.vault.economy.Economy.class;
+        RegisteredServiceProvider<Economy> registration = getServer().getServicesManager().getRegistration(vault);
+        if(registration != null){
+            ECONOMY = registration.getProvider();
+        }
+        return registration != null;
     }
 
     @Override
@@ -41,7 +64,7 @@ public final class SimpleReward extends JavaPlugin {
         this.saveDefaultConfig();
         this.initConfigYml();
         this.initDb();
-        this.setupEconomy();
+//        this.setupEconomy();
         this.registerComponent();
         SCHEDULER = this.getServer().getScheduler();
     }
