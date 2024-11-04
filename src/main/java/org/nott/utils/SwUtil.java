@@ -6,8 +6,9 @@ package org.nott.utils;
  */
 
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextColor;
 import net.md_5.bungee.api.chat.TextComponent;
-import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -194,6 +195,40 @@ public class SwUtil {
 
     public static BukkitTask runTaskLater(Runnable task, long delay){
         return SimpleReward.SCHEDULER.runTaskLater(plugin, task, delay);
+    }
+
+    public static void sendErrorMsg(Player player,String msgInYaml){
+        sendErrorMsg(player,msgInYaml,null);
+    }
+
+    public static void sendErrorMsg(Player player,String msgInYaml,@org.jetbrains.annotations.Nullable String ...formatArgs){
+        String msg = SimpleReward.MESSAGE.getString(msgInYaml);
+        if(StringUtils.isEmpty(msg)){
+            throw new RuntimeException("Message is null");
+        }
+        if(formatArgs != null && formatArgs.length > 0){
+            msg = msg.formatted(formatArgs);
+        }
+        SimpleReward.adventure.player(player).sendMessage(
+                Component.text(msg)
+                        .color(TextColor.color(TextColor.fromHexString(GlobalFactory.ERROR_COLOR_HEX))));
+    }
+
+    public static void sendSuccessMsg(Player player,String msgInYaml){
+        sendSuccessMsg(player,msgInYaml,null);
+    }
+
+    public static void sendSuccessMsg(Player player, String msgInYaml,@org.jetbrains.annotations.Nullable String ...formatArgs){
+        String msg = SimpleReward.MESSAGE.getString(msgInYaml);
+        if(StringUtils.isEmpty(msg)){
+            throw new RuntimeException("Message is null");
+        }
+        if(formatArgs != null && formatArgs.length > 0){
+            msg = msg.formatted(formatArgs);
+        }
+        SimpleReward.adventure.player(player).sendMessage(
+                Component.text(msg)
+                        .color(TextColor.color(TextColor.fromHexString(GlobalFactory.SUCCESS_COLOR_HEX))));
     }
 }
 
