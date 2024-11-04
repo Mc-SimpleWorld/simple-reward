@@ -6,7 +6,6 @@ prefix: SimpleReward
 authors: [ Nott ]
 description: Plugins for daily reward.
 depend: ["PlaceholderAPI"]
-loadbefore: ['Vault']
 
 commands:
   dailyreward:

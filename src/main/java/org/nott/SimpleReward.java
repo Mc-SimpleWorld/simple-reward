@@ -73,13 +73,11 @@ public final class SimpleReward extends JavaPlugin {
         this.saveDefaultConfig();
         this.initConfigYml();
         this.initDb();
-//        this.setupEconomy();
         this.registerComponent();
 
         SCHEDULER = this.getServer().getScheduler();
         adventure = BukkitAudiences.create(this);
         this.removeExpiredInviteInfoAtFixedRate();
-        this.setupEconomy();
     }
 
     private void removeExpiredInviteInfoAtFixedRate() {
@@ -126,10 +124,6 @@ public final class SimpleReward extends JavaPlugin {
         this.getCommand("invite").setExecutor(new InviteExecutor(this));
     }
 
-    private void setupEconomy() {
-        RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
-        ECONOMY = rsp.getProvider();
-    }
 
     private void initDb() {
         SqlLiteManager.checkDbFileIsExist(this);
