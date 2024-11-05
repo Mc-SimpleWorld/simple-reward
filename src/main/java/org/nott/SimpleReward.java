@@ -10,6 +10,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.*;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
+import org.nott.executor.DailyRewardExecutor;
 import org.nott.executor.InviteExecutor;
 import org.nott.global.GlobalFactory;
 import org.nott.gui.RewardGui;
@@ -74,7 +75,7 @@ public final class SimpleReward extends JavaPlugin {
         this.initConfigYml();
         this.initDb();
         this.registerComponent();
-
+        guiProvider = new RewardGui(this);
         SCHEDULER = this.getServer().getScheduler();
         adventure = BukkitAudiences.create(this);
         this.removeExpiredInviteInfoAtFixedRate();
@@ -122,6 +123,7 @@ public final class SimpleReward extends JavaPlugin {
         PluginManager pluginManager = this.getServer().getPluginManager();
         pluginManager.registerEvents(new LoginListener(this),this);
         this.getCommand("invite").setExecutor(new InviteExecutor(this));
+        this.getCommand("dailyreward").setExecutor(new DailyRewardExecutor(this));
     }
 
 

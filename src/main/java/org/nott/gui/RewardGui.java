@@ -39,28 +39,34 @@ public class RewardGui {
 
     ConcurrentHashMap<Player,Vector<InventoryGui>> playerGUIMap = new ConcurrentHashMap<>(16);
 
+    public RewardGui(SimpleReward plugin) {
+        this.plugin = plugin;
+    }
+
     public InventoryGui getMainMenu(Player player) {
         String[] guiSetup = {
                 "aaaaaaaaa",
                 "anaaaraaa",
                 "aaaaaaaaa"
         };
-        Integer count = SimpleReward.SAVE.getInt(player.getName(),0);
+//        Integer count = SimpleReward.SAVE.getInt(player.getName(),0);
+        Integer count = 10;
         String title = SimpleReward.MESSAGE.getString("title");
         InventoryGui gui = new InventoryGui(plugin, title, guiSetup);
         gui.addElement(new StaticGuiElement('a', new ItemStack(Material.AIR), ChatColor.LIGHT_PURPLE.toString()));
         // Player Reward Info('name')
+        String msg = PlaceholderAPI.setPlaceholders(player, SimpleReward.MESSAGE.getString("player_info"));
         gui.addElement(new StaticGuiElement('n',
                 new ItemStack(Material.PLAYER_HEAD),
                 1, // Display a number as the item count
                 click -> true,
-                ChatColor.GOLD + PlaceholderAPI.setPlaceholders(player,SimpleReward.MESSAGE.getString("player_info")),
-                ChatColor.DARK_GREEN + String.format(SimpleReward.MESSAGE.getString("have_last",
-                        SwUtil.isNull(count) ? "0" : count + ""))
+                ChatColor.GOLD + msg,
+                ChatColor.DARK_GREEN + String.format(SimpleReward.MESSAGE.getString("have_last"),
+                        SwUtil.isNull(count) ? "0" : count + "")
         ));
         // Enter Reward gui(reward)
         if(count > 0){
-            gui.addElement(new StaticGuiElement('r', new ItemStack(Material.AIR), click -> {
+            gui.addElement(new StaticGuiElement('r', new ItemStack(Material.GOLD_BLOCK), click -> {
                 SimpleReward.SCHEDULER.runTaskLater(plugin, () -> {
                     close(gui);
                     getRewardMenu((Player) click.getWhoClicked()).show(click.getWhoClicked());
@@ -75,7 +81,8 @@ public class RewardGui {
     }
 
     public InventoryGui getRewardMenu(Player player){
-        Integer count = SimpleReward.SAVE.getInt(player.getName(),0);
+//        Integer count = SimpleReward.SAVE.getInt(player.getName(),0);
+        Integer count = 10;
         if(SwUtil.isNull(count) || count <= 0){
             SwUtil.sendMessage(player,SimpleReward.MESSAGE.getString("not_reward"),ChatColor.RED);
             closeAll(player);
