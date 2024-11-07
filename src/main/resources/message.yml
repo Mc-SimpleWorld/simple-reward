@@ -30,6 +30,8 @@ not_invite_self: '不能邀请自己...'
 cancel_success: '取消成功'
 be_cancel: '你的邀请已被拒绝'
 already_confirming: '玩家%s已有处理中的邀请'
+not_invite_info: '你没有待使用的新人邀请码...'
+your_code: '你的邀请码是：[%s]'
 
 
 

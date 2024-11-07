@@ -43,17 +43,48 @@ public class InviteExecutor implements TabExecutor {
     @SuppressWarnings("all")
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if(args.length == 0){
+        if (args.length == 0) {
             throw new CommandException("未知命令");
         }
         String arg = args[0];
-        switch (arg){
-            default -> parseInviteCommand(commandSender,args);
+        switch (arg) {
+            default -> parseInviteCommand(commandSender, args);
             case "confirm" -> parseConfirmCommand(commandSender);
             case "cancel" -> parseCancelCommand(commandSender);
+            case "mycode" -> parseMyCodeCommand(commandSender);
         }
 
         return true;
+    }
+
+    private void parseMyCodeCommand(CommandSender commandSender) {
+        String name = commandSender.getName();
+        Plugin plugins = getPlugin();
+        Player player = (Player) commandSender;
+        SimpleReward.SCHEDULER.runTaskAsynchronously(plugins, () -> {
+            Connection con = null;
+            PreparedStatement ps = null;
+            try {
+                con = SqlLiteManager.getConnect();
+                ps = con.prepareStatement("select code from invite_data where id = ?");
+                ps.setString(1, name);
+                ResultSet rs = ps.executeQuery();
+                String code = null;
+                if (rs.next()) {
+                    code = rs.getString("code");
+                }
+                if (SwUtil.isNull(code)) {
+                    SwUtil.sendErrorMsg(player, SimpleReward.MESSAGE.getString("not_invite_info"));
+                } else {
+                    SwUtil.sendSuccessMsg(player, SimpleReward.MESSAGE.getString("your_code"));
+                }
+            } catch (Exception e) {
+                SwUtil.logThrow(e);
+            } finally {
+                DbUtils.closeQuietly(con);
+                DbUtils.closeQuietly(ps);
+            }
+        });
     }
 
     private void parseCancelCommand(@NotNull CommandSender commandSender) {
@@ -66,7 +97,7 @@ public class InviteExecutor implements TabExecutor {
         InviteTemp temp = playerConfirmMap.get(senderName);
         String inviteName = temp.getInviteName();
         Player playerExact = getPlugin().getServer().getPlayerExact(inviteName);
-        if(SwUtil.isNotNull(playerExact)){
+        if (SwUtil.isNotNull(playerExact)) {
             playerInviteMap.remove(inviteName);
             SwUtil.sendErrorMsg(sender, "be_cancel");
         }
@@ -78,7 +109,7 @@ public class InviteExecutor implements TabExecutor {
         String senderName = commandSender.getName();
         Player sender = (Player) commandSender;
         if (!playerConfirmMap.containsKey(senderName)) {
-            SwUtil.sendErrorMsg(sender,"not_confirming");
+            SwUtil.sendErrorMsg(sender, "not_confirming");
             return;
         }
         InviteTemp inviteTemp = playerConfirmMap.get(senderName);
@@ -90,8 +121,8 @@ public class InviteExecutor implements TabExecutor {
             PreparedStatement ps = null;
             try {
                 Player playerExact = plugins.getServer().getPlayerExact(id);
-                if(SwUtil.isNull(playerExact)){
-                    SwUtil.sendErrorMsg(sender,"player_not_found");
+                if (SwUtil.isNull(playerExact)) {
+                    SwUtil.sendErrorMsg(sender, "player_not_found");
                     return;
                 }
                 connect = SqlLiteManager.getConnect();
@@ -101,7 +132,7 @@ public class InviteExecutor implements TabExecutor {
                 ps.setString(3, id);
                 int executed = ps.executeUpdate();
                 if (executed == 0) {
-                    SwUtil.sendErrorMsg(sender,"code_already_use");
+                    SwUtil.sendErrorMsg(sender, "code_already_use");
                     return;
                 }
                 // deposit
@@ -129,10 +160,10 @@ public class InviteExecutor implements TabExecutor {
         if (playerInviteMap.containsKey(senderName)) {
             Timestamp timestamp = playerInviteMap.get(senderName);
             int diff = new Timestamp(System.currentTimeMillis()).compareTo(timestamp);
-            if(diff < 0){
+            if (diff < 0) {
                 playerInviteMap.remove(senderName);
             }
-            SwUtil.sendErrorMsg(sender,"inviting_player",(diff / 1000) + "");
+            SwUtil.sendErrorMsg(sender, "inviting_player", (diff / 1000) + "");
             SwUtil.runTaskLater(() -> {
                 if (SwUtil.isNotNull(playerInviteMap.get(sender))) {
                     playerConfirmMap.remove(sender);
@@ -147,32 +178,32 @@ public class InviteExecutor implements TabExecutor {
             try {
                 connect = SqlLiteManager.getConnect();
                 ps = connect.prepareStatement("select * from invite_data where id = ?");
-                ps.setString(1,senderName);
+                ps.setString(1, senderName);
                 ResultSet rs = ps.executeQuery();
-                if(rs.next()){
-                    SwUtil.sendErrorMsg(sender,"not_new_invite");
+                if (rs.next()) {
+                    SwUtil.sendErrorMsg(sender, "not_new_invite");
                     return;
                 }
                 ps = connect.prepareStatement("select * from invite_data where code = ? and verfiy_time >= ? and id != ?");
                 ps.setString(1, code);
                 ps.setLong(2, time);
-                ps.setString(3,senderName);
+                ps.setString(3, senderName);
                 rs = ps.executeQuery();
                 String id = null;
                 while (rs.next()) {
                     id = rs.getString("id");
                 }
                 if (SwUtil.isNull(id)) {
-                    SwUtil.sendErrorMsg(sender,"invalid_code");
+                    SwUtil.sendErrorMsg(sender, "invalid_code");
                     return;
                 }
                 Player playerExact = plugins.getServer().getPlayerExact(id);
                 if (SwUtil.isNull(playerExact)) {
-                    SwUtil.sendErrorMsg(sender,"player_not_found", id + "");
+                    SwUtil.sendErrorMsg(sender, "player_not_found", id + "");
                     return;
                 }
-                if(playerConfirmMap.containsKey(id)){
-                    SwUtil.sendErrorMsg(sender,"already_confirming", id + "");
+                if (playerConfirmMap.containsKey(id)) {
+                    SwUtil.sendErrorMsg(sender, "already_confirming", id + "");
                     return;
                 }
                 InviteTemp inviteTemp = new InviteTemp();
@@ -180,15 +211,15 @@ public class InviteExecutor implements TabExecutor {
                 inviteTemp.setInviteName(senderName);
                 inviteTemp.setCode(code);
                 playerConfirmMap.put(playerExact.getName(), inviteTemp);
-                SwUtil.sendSuccessMsg(playerExact,"invite_confirm", commandSender.getName());
-                SwUtil.sendSuccessMsg(sender,"wait_confirm");
+                SwUtil.sendSuccessMsg(playerExact, "invite_confirm", commandSender.getName());
+                SwUtil.sendSuccessMsg(sender, "wait_confirm");
                 BukkitTask bukkitTask = SwUtil.runTaskLater(() -> {
                     if (SwUtil.isNotNull(playerConfirmMap.get(playerExact.getName()))) {
                         playerConfirmMap.remove(playerExact.getName());
                     }
                     playerInviteMap.remove(senderName, "");
                 }, 120 * 20);
-                playerInviteMap.put(senderName,new Timestamp(System.currentTimeMillis()));
+                playerInviteMap.put(senderName, new Timestamp(System.currentTimeMillis()));
 
             } catch (Exception e) {
                 throw new RuntimeException(e);
@@ -202,8 +233,8 @@ public class InviteExecutor implements TabExecutor {
     @Nullable
     @Override
     public List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if(args.length == 1){
-            return Arrays.asList("<邀请码>", "confirm", "cancel");
+        if (args.length == 1) {
+            return Arrays.asList("<邀请码>", "confirm", "cancel", "mycode");
         }
         return null;
     }
