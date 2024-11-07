@@ -23,7 +23,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 @AllArgsConstructor
 @Data
-public class InventoryListener implements Listener {
+public class InventoryGUIListener implements Listener {
 
     private SimpleReward plugin;
 
